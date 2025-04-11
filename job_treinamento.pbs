@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -N treinamento_cluster
+#PBS -l select=1:ncpus=8:mem=32gb
+#PBS -l walltime=48:00:00
+#PBS -j oe
+#PBS -V
+#PBS -o logs/job_treinamento.log
+#PBS -m ae
+#PBS -M seuemail@dominio.br
+
+module load anaconda3
+source activate seu_ambiente
+
+cd $PBS_O_WORKDIR
+
+# Descompacta o dataset se necessário
+if [ ! -f df_base.csv ]; then
+    echo "Descompactando df_base.zip..."
+    unzip df_base.zip
+fi
+
+echo "Iniciando treinamento..."
+python main_hpc.py > logs/main_output.log 2>&1
+echo "Treinamento finalizado."
