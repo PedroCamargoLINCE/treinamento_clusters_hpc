@@ -143,7 +143,7 @@ def get_dataloaders_from_cluster(df, cluster_id, lookback=48, forecast=4, batch_
 from tqdm import trange
 
 def train_model(model, train_loader, val_loader, n_epochs=250, lr=1e-3, patience=20):
-    optimizer = optim.RMSprop(model.parameters(), lr=lr)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
     criterion = nn.MSELoss()
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', 
                                                      factor=0.5, patience=8, verbose=False)
