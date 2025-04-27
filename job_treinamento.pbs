@@ -1,24 +1,38 @@
 #!/bin/bash
-#PBS -N treinamento_cluster
+#PBS -N treino_todos_clusters
 #PBS -l select=1:ncpus=8:mem=32gb
-#PBS -l walltime=48:00:00
+#PBS -l walltime=72:00:00
 #PBS -j oe
+#PBS -o logs/treino_todos_clusters.log
 #PBS -V
-#PBS -o logs/job_treinamento.log
-#PBS -m ae
-#PBS -M seuemail@dominio.br
-
-module load anaconda3
-source activate seu_ambiente
 
 cd $PBS_O_WORKDIR
 
-# Descompacta o dataset se necessário
-if [ ! -f df_base.csv ]; then
-    echo "Descompactando df_base.zip..."
-    unzip df_base.zip
-fi
+# Ativa o ambiente Conda
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate preditor_dl
 
-echo "Iniciando treinamento..."
-python main_hpc.py > logs/main_output.log 2>&1
-echo "Treinamento finalizado."
+# Lista de clusters para treinar
+CLUSTERS=(0 1 1000 1001 2000 2001 3000 3001 4000 4001 5000 5001 6000 6001 7000 7001 8000 8001 9000 9001 10000 10001 11000 11001 12000 12001 13000 13001 14000 14001 15000 15001 16000 16001)
+
+# Loop para rodar todos
+for CLUSTER_ID in "${CLUSTERS[@]}"; do
+    echo "========================="
+    echo "Treinando Cluster $CLUSTER_ID"
+    echo "========================="
+
+    python main_hpc.py --cluster_id $CLUSTER_ID
+
+    if [ $? -eq 0 ]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - Cluster $CLUSTER_ID finalizado com sucesso." >> logs/checkpoints.log
+    else
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - Erro ao treinar Cluster $CLUSTER_ID." >> logs/checkpoints.log
+    fi
+
+    echo "✅ Finalizado cluster $CLUSTER_ID"
+
+    # Opcional: pequena pausa de 10 segundos entre clusters
+    sleep 10
+done
+
+echo "🏁 TODOS OS CLUSTERS FINALIZADOS"
