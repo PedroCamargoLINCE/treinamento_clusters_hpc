@@ -58,6 +58,22 @@ Este projeto realiza a previsão de **morbidade e mortalidade por doenças respi
 
 ---
 
+## Análise de Correlação de Pearson
+
+Após a engenharia de atributos (seção **4.1** do notebook), é realizada uma análise de **correlação de Pearson** entre as features criadas e a variável alvo (`target_next_4_sum`):
+
+- **Bar chart**: exibe as 15 features com maior correlação positiva e as 15 com maior correlação negativa com o alvo, permitindo identificar rapidamente os preditores mais relevantes.
+- **Heatmap**: mostra a matriz de correlação entre as top features e o alvo, revelando possíveis redundâncias (multicolinearidade) no conjunto de atributos.
+
+Os gráficos são salvos automaticamente em `results/<run_id>/xgboost_YYYYMMDD_HHMMSS/`:
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `pearson_correlation_target.png` | Bar chart de correlação das features com o alvo |
+| `pearson_correlation_heatmap.png` | Heatmap de correlação entre as top features |
+
+---
+
 ##  Avaliação dos Modelos
 
 Para cada modelo treinado (ou conjunto de modelos de uma execução), são salvos no diretório `results/xgboost_YYYYMMDD_HHMMSS/`:
